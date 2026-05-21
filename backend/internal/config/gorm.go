@@ -18,7 +18,12 @@ func NewGorm(config *Config) *DB {
 }
 
 func (d *DB) Connection() (*gorm.DB, error) {
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Shanghai",
+	if d.config == nil || d.config.Database.Host == "" || d.config.Database.Port == "" {
+		return nil, fmt.Errorf("database configuration is incomplete: host and port must be set")
+	}
+
+	dsn := fmt.Sprintf(
+		"host='%s' user='%s' password='%s' dbname='%s' port='%s' sslmode=disable TimeZone=Asia/Shanghai",
 		d.config.Database.Host,
 		d.config.Database.User,
 		d.config.Database.Pass,
