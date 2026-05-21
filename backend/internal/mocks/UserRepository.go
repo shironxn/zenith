@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	domain "github.com/shironxn/blanknotes/internal/core/domain"
+	domain "github.com/shironxn/zenith/internal/core/domain"
 	mock "github.com/stretchr/testify/mock"
 )
 

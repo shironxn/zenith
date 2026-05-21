@@ -825,7 +825,7 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "",
 	BasePath:         "/api/v1",
 	Schemes:          []string{},
-	Title:            "gocrud",
+	Title:            "Zenith",
 	Description:      "golang crud api",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,

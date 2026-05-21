@@ -6,8 +6,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 
-	"github.com/shironxn/blanknotes/internal/config"
-	"github.com/shironxn/blanknotes/internal/core/domain"
+	"github.com/shironxn/zenith/internal/config"
+	"github.com/shironxn/zenith/internal/core/domain"
 )
 
 type JWT struct {

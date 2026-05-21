@@ -14,10 +14,10 @@
 
 ![Logo](https://media1.tenor.com/m/aeXj7WEQzTMAAAAd/chainsaw-chainsaw-man.gif)
 
-  <h3 align="center">GOCRUD</h3>
+  <h3 align="center">Zenith</h3>
 
   <p align="center">
-    A simple Golang CRUD API
+    A high-performance full-stack note management system
   </p>
 
 [<img src="https://forthebadge.com/images/badges/built-with-love.svg" href="https://gorm.io" alt="gorm" width="30%">][built-with-heart-url]
@@ -28,7 +28,7 @@
 
 ## About The Project
 
-GOCRUD is a simple CRUD (Create, Read, Update, Delete) API developed in Golang. It provides basic functionalities for managing notes.
+Zenith is a full-stack note management application built with Go (Fiber) for the backend and Next.js for the frontend. It follows clean architecture principles to ensure scalability and maintainability.
 
 ### Structure Project
 
@@ -115,7 +115,7 @@ GOCRUD is a simple CRUD (Create, Read, Update, Delete) API developed in Golang. 
 Clone the repository
 
 ```bash
-git clone https://github.com/shironxn/gocrud
+git clone https://github.com/shironxn/zenith
 ```
 
 ### Backend
@@ -123,7 +123,7 @@ git clone https://github.com/shironxn/gocrud
 1. Navigate to the folder
 
    ```bash
-   cd gocrud/backend
+   cd zenith/backend
    ```
 
 2. Copy or rename .env.example to .env
@@ -162,26 +162,26 @@ make test
 
 1. Navigate to the folder
 
-    ```bash
-    cd gocrud/frontend
-    ```
+   ```bash
+   cd zenith/frontend
+   ```
 
 2. Copy or rename .env.example to .env
 
-    ```bash
-    cp .env.example .env
-    ```
+   ```bash
+   cp .env.example .env
+   ```
 
 3. Install package
 
-    ```bash
-    npm install
-    ```    
+   ```bash
+   npm install
+   ```
 
 4. Run
-    ```bash
-    npm run dev
-    ```
+   ```bash
+   npm run dev
+   ```
 
 <!-- API Docs -->
 
@@ -193,14 +193,14 @@ You can see it at http://localhost:8080/api/v1/docs
 <!-- MARKDOWN LINKS & IMAGES -->
 
 [built-with-heart-url]: https://github.com/shironxn
-[contributors-shield]: https://img.shields.io/github/contributors/shironxn/gocrud.svg?style=for-the-badge
-[contributors-url]: https://github.com/shironxn/blanknotes/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/shironxn/gocrud.svg?style=for-the-badge
-[forks-url]: https://github.com/shironxn/blanknotes/network/members
-[stars-shield]: https://img.shields.io/github/stars/shironxn/gocrud.svg?style=for-the-badge
-[stars-url]: https://github.com/shironxn/blanknotes/stargazers
-[issues-shield]: https://img.shields.io/github/issues/shironxn/gocrud.svg?style=for-the-badge
-[issues-url]: https://github.com/shironxn/blanknotes/issues
+[contributors-shield]: https://img.shields.io/github/contributors/shironxn/zenith.svg?style=for-the-badge
+[contributors-url]: https://github.com/shironxn/zenith/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/shironxn/zenith.svg?style=for-the-badge
+[forks-url]: https://github.com/shironxn/zenith/network/members
+[stars-shield]: https://img.shields.io/github/stars/shironxn/zenith.svg?style=for-the-badge
+[stars-url]: https://github.com/shironxn/zenith/stargazers
+[issues-shield]: https://img.shields.io/github/issues/shironxn/zenith.svg?style=for-the-badge
+[issues-url]: https://github.com/shironxn/zenith/issues
 [database-schema]: ./assets/database-schema.png
 [golang-shield]: https://img.shields.io/badge/Go-00ADD8?style=for-the-badge&logo=go&logoColor=white
 [golang-url]: https://go.dev

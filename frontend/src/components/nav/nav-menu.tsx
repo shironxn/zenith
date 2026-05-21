@@ -54,7 +54,7 @@ const NavMenu = ({
         <div>
           <Link href={"/"}>
             <h1 className="scroll-m-20 text-2xl font-bold tracking-tight">
-              BlankNotes
+              Zenith
             </h1>
           </Link>
         </div>

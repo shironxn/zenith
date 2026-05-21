@@ -5,8 +5,8 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/jackc/pgx/v5/pgconn"
-	"github.com/shironxn/blanknotes/internal/core/domain"
-	"github.com/shironxn/blanknotes/internal/core/port"
+	"github.com/shironxn/zenith/internal/core/domain"
+	"github.com/shironxn/zenith/internal/core/port"
 	"gorm.io/gorm"
 )
 

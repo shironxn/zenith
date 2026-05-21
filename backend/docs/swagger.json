@@ -2,7 +2,7 @@
     "swagger": "2.0",
     "info": {
         "description": "golang crud api",
-        "title": "gocrud",
+        "title": "Zenith",
         "contact": {},
         "version": "1.0"
     },

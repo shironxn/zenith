@@ -204,7 +204,7 @@ definitions:
 info:
   contact: {}
   description: golang crud api
-  title: gocrud
+  title: Zenith
   version: "1.0"
 paths:
   /auth/login:

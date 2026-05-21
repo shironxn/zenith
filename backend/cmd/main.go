@@ -1,23 +1,23 @@
 package main
 
 import (
-	"github.com/shironxn/blanknotes/internal/adapter/http/handler"
-	"github.com/shironxn/blanknotes/internal/adapter/http/middleware"
-	"github.com/shironxn/blanknotes/internal/adapter/http/route"
-	"github.com/shironxn/blanknotes/internal/adapter/repository"
-	"github.com/shironxn/blanknotes/internal/config"
-	"github.com/shironxn/blanknotes/internal/core/domain"
-	"github.com/shironxn/blanknotes/internal/core/service"
-	"github.com/shironxn/blanknotes/internal/util"
+	"github.com/shironxn/zenith/internal/adapter/http/handler"
+	"github.com/shironxn/zenith/internal/adapter/http/middleware"
+	"github.com/shironxn/zenith/internal/adapter/http/route"
+	"github.com/shironxn/zenith/internal/adapter/repository"
+	"github.com/shironxn/zenith/internal/config"
+	"github.com/shironxn/zenith/internal/core/domain"
+	"github.com/shironxn/zenith/internal/core/service"
+	"github.com/shironxn/zenith/internal/util"
 
-	_ "github.com/shironxn/blanknotes/docs"
+	_ "github.com/shironxn/zenith/docs"
 
 	"github.com/charmbracelet/log"
 )
 
-// @title gocrud
+// @title Zenith
 // @version 1.0
-// @description golang crud api
+// @description Zenith API for note management
 // @BasePath /api/v1
 func main() {
 	cfg, err := config.NewConfig()

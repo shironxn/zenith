@@ -17,7 +17,7 @@ services:
       - connection
 
   app:
-    container_name: gocrud
+    container_name: zenith-app
     environment:
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}

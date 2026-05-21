@@ -2,10 +2,10 @@ package service
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/shironxn/blanknotes/internal/config"
-	"github.com/shironxn/blanknotes/internal/core/domain"
-	"github.com/shironxn/blanknotes/internal/core/port"
-	"github.com/shironxn/blanknotes/internal/util"
+	"github.com/shironxn/zenith/internal/config"
+	"github.com/shironxn/zenith/internal/core/domain"
+	"github.com/shironxn/zenith/internal/core/port"
+	"github.com/shironxn/zenith/internal/util"
 )
 
 type AuthService struct {

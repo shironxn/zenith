@@ -2,7 +2,7 @@ package port
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/shironxn/blanknotes/internal/core/domain"
+	"github.com/shironxn/zenith/internal/core/domain"
 )
 
 type AuthRepository interface {

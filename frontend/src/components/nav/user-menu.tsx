@@ -30,7 +30,7 @@ const menu: { title: string; href: string; icon: JSX.Element }[] = [
   },
   {
     title: "Github",
-    href: "https://github.com/shironxn/blanknotes",
+    href: "https://github.com/shironxn/zenith",
     icon: <Github />,
   },
   {
@@ -40,7 +40,7 @@ const menu: { title: string; href: string; icon: JSX.Element }[] = [
   },
   {
     title: "Api",
-    href: "https://github.com/shironxn/blanknotes",
+    href: "https://github.com/shironxn/zenith",
     icon: <SquareArrowOutUpRight />,
   },
 ];

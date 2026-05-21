@@ -4,10 +4,10 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/shironxn/blanknotes/internal/core/domain"
-	"github.com/shironxn/blanknotes/internal/core/port"
-	"github.com/shironxn/blanknotes/internal/mocks"
-	"github.com/shironxn/blanknotes/internal/util"
+	"github.com/shironxn/zenith/internal/core/domain"
+	"github.com/shironxn/zenith/internal/core/port"
+	"github.com/shironxn/zenith/internal/mocks"
+	"github.com/shironxn/zenith/internal/util"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"

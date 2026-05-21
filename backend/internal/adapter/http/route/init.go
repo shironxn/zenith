@@ -4,9 +4,9 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
-	"github.com/shironxn/blanknotes/internal/config"
+	"github.com/shironxn/zenith/internal/config"
 
-	_ "github.com/shironxn/blanknotes/docs"
+	_ "github.com/shironxn/zenith/docs"
 
 	"github.com/gofiber/swagger"
 )
@@ -32,6 +32,6 @@ func (r *InitRoute) Route(app *fiber.App) {
 
 	app.Get("/api/v1/docs/*", swagger.HandlerDefault)
 	app.Get("/", func(ctx *fiber.Ctx) error {
-		return ctx.Status(fiber.StatusOK).JSON("Welcome to gocrud by shironxn")
+		return ctx.Status(fiber.StatusOK).JSON("Welcome to Zenith by shironxn")
 	})
 }
