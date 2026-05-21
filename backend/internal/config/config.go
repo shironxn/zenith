@@ -1,8 +1,10 @@
 package config
 
 import (
+	"errors"
 	"flag"
 	"os"
+	"strings"
 
 	"github.com/joho/godotenv"
 )
@@ -43,14 +45,11 @@ func LoadConfig() error {
 		return nil
 	}
 
-	if flag.Lookup("test.v") != nil {
-		if err := godotenv.Load("../../.env"); err != nil {
-			return err
-		}
+	isTest := flag.Lookup("test.v") != nil
+	if isTest {
+		_ = godotenv.Load("../../.env")
 	} else {
-		if err := godotenv.Load(); err != nil {
-			return err
-		}
+		_ = godotenv.Load()
 	}
 
 	config = &Config{
@@ -87,5 +86,25 @@ func LoadConfig() error {
 		},
 	}
 
+	if err := validateConfig(config, isTest); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func validateConfig(cfg *Config, isTest bool) error {
+	if strings.TrimSpace(cfg.Server.Host) == "" || strings.TrimSpace(cfg.Server.Port) == "" {
+		return errors.New("APP_HOST and APP_PORT are required")
+	}
+	if strings.TrimSpace(cfg.Server.Web) == "" {
+		return errors.New("APP_WEB is required")
+	}
+	if !isTest && (len(cfg.JWT.Access) < 32 || len(cfg.JWT.Refresh) < 32) {
+		return errors.New("JWT_ACCESS_SECRET and JWT_REFRESH_SECRET must be at least 32 characters")
+	}
+	if strings.TrimSpace(cfg.Database.Host) == "" || strings.TrimSpace(cfg.Database.Port) == "" || strings.TrimSpace(cfg.Database.Name) == "" || strings.TrimSpace(cfg.Database.User) == "" {
+		return errors.New("database configuration is incomplete")
+	}
 	return nil
 }

@@ -1,91 +1,58 @@
 "use server";
 
 import { NoteCreate, NoteQuery, NoteUpdate } from "@/lib/schema/note";
+import { serverFetch } from "@/lib/api/server-client";
 import { revalidatePath } from "next/cache";
-import { cookies, headers } from "next/headers";
 import { notFound } from "next/navigation";
 
-const BASE_API_URL = process.env.NEXT_PUBLIC_API_URL;
-
-const CreateNotes = async (data: NoteCreate) => {
-  const res = await fetch(`${BASE_API_URL}/notes`, {
+export const CreateNotes = async (data: NoteCreate) => {
+  const { error } = await serverFetch("/notes", {
     method: "POST",
     body: JSON.stringify(data),
-    headers: {
-      "Content-Type": "application/json",
-      Cookie: cookies().toString(),
-    },
   });
-
-  if (!res.ok) {
-    const result = await res.json();
-    return result.error;
-  }
-
+  if (error) return error.message;
   revalidatePath("/");
 };
 
-const GetNotes = async (query?: NoteQuery) => {
-  const res = await fetch(
-    `${BASE_API_URL}/notes?user_id=${query?.user_id || 0}&visibility=${
-      query?.visibility || ""
-    }&title=${query?.search || ""}&page=${query?.page || 1}&limit=6&order=desc`,
-    { headers: headers() }
-  );
-
-  const result = await res.json();
-  if (!res.ok) {
-    return { error: result.error };
-  }
-
-  return result;
-};
-
-const GetNotesByID = async (id: string) => {
-  const res = await fetch(`${BASE_API_URL}/notes/${id}`, {
-    headers: headers(),
+export const GetNotes = async (query?: NoteQuery) => {
+  const { data, error } = await serverFetch<any>("/notes", {
+    params: {
+      user_id: query?.user_id || undefined,
+      visibility: query?.visibility || undefined,
+      title: query?.search || undefined,
+      page: query?.page || 1,
+      limit: 6,
+      order: "desc",
+    },
+    cache: "no-store",
   });
 
-  if (res.status === 404) {
-    notFound();
-  }
-
-  const result = await res.json();
-  if (!res.ok) {
-    return { error: result?.error };
-  }
-
-  return result;
+  if (error) return { error: error.message };
+  return data;
 };
 
-const UpdateNotes = async (data: NoteUpdate, id: number) => {
-  const res = await fetch(`${BASE_API_URL}/notes/${id}`, {
+export const GetNotesByID = async (id: string) => {
+  const { data, error } = await serverFetch<any>(`/notes/${id}`, {
+    cache: "no-store",
+  });
+  if (error?.message?.toLowerCase().includes("not found")) notFound();
+  if (error) return { error: error.message };
+  return data;
+};
+
+export const UpdateNotes = async (data: NoteUpdate, id: number) => {
+  const { error } = await serverFetch(`/notes/${id}`, {
     method: "PUT",
     body: JSON.stringify(data),
-    headers: {
-      "Content-Type": "application/json",
-      Cookie: cookies().toString(),
-    },
   });
-
-  if (!res.ok) {
-    const result = await res.json();
-    return result.error;
-  }
-
+  if (error) return error.message;
   revalidatePath("/");
 };
 
-const DeleteNotes = async (id: string) => {
-  const res = await fetch(`${BASE_API_URL}/notes/${id}`, {
+export const DeleteNotes = async (id: string) => {
+  const { error } = await serverFetch(`/notes/${id}`, {
     method: "DELETE",
-    headers: headers(),
   });
-
-  if (!res.ok) {
-    const result = await res.json();
-    return result.error;
-  }
+  if (error) return error.message;
+  revalidatePath("/");
 };
-
-export { CreateNotes, GetNotes, GetNotesByID, UpdateNotes, DeleteNotes };

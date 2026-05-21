@@ -111,13 +111,9 @@ func (h *AuthHandler) Login(ctx *fiber.Ctx) error {
 		Value:    tokens.RefreshToken,
 		Path:     "/",
 		HTTPOnly: true,
+		Secure:   h.secureCookie(),
 		Expires:  time.Now().Add(24 * time.Hour),
-		SameSite: func(dev string) string {
-			if dev == "true" {
-				return fiber.CookieSameSiteLaxMode
-			}
-			return fiber.CookieSameSiteNoneMode
-		}(h.cfg.Server.Dev),
+		SameSite: h.sameSiteMode(),
 	})
 
 	ctx.Cookie(&fiber.Cookie{
@@ -125,13 +121,9 @@ func (h *AuthHandler) Login(ctx *fiber.Ctx) error {
 		Value:    tokens.AccessToken,
 		Path:     "/",
 		HTTPOnly: true,
+		Secure:   h.secureCookie(),
 		Expires:  time.Now().Add(10 * time.Minute),
-		SameSite: func(dev string) string {
-			if dev == "true" {
-				return fiber.CookieSameSiteLaxMode
-			}
-			return fiber.CookieSameSiteNoneMode
-		}(h.cfg.Server.Dev),
+		SameSite: h.sameSiteMode(),
 	})
 
 	return ctx.Status(fiber.StatusOK).JSON(domain.UserResponse{
@@ -139,7 +131,6 @@ func (h *AuthHandler) Login(ctx *fiber.Ctx) error {
 		Name:      result.Name,
 		CreatedAt: result.CreatedAt,
 		UpdatedAt: result.UpdatedAt,
-		UserToken: tokens,
 	})
 }
 
@@ -154,16 +145,20 @@ func (h *AuthHandler) Logout(ctx *fiber.Ctx) error {
 
 	ctx.Cookie(&fiber.Cookie{
 		Name:     "refresh-token",
+		Path:     "/",
 		Expires:  time.Now().Add(-(time.Hour * 2)),
 		HTTPOnly: true,
-		SameSite: "lax",
+		Secure:   h.secureCookie(),
+		SameSite: h.sameSiteMode(),
 	})
 
 	ctx.Cookie(&fiber.Cookie{
 		Name:     "access-token",
+		Path:     "/",
 		Expires:  time.Now().Add(-(time.Hour * 2)),
 		HTTPOnly: true,
-		SameSite: "lax",
+		Secure:   h.secureCookie(),
+		SameSite: h.sameSiteMode(),
 	})
 
 	claims, ok := ctx.Locals("claims").(*domain.Claims)
@@ -199,17 +194,26 @@ func (h *AuthHandler) Refresh(ctx *fiber.Ctx) error {
 		Value:    *result,
 		Path:     "/",
 		HTTPOnly: true,
+		Secure:   h.secureCookie(),
 		Expires:  time.Now().Add(10 * time.Minute),
-		SameSite: func(dev string) string {
-			if dev == "true" {
-				return fiber.CookieSameSiteLaxMode
-			}
-			return fiber.CookieSameSiteNoneMode
-		}(h.cfg.Server.Dev),
+		SameSite: h.sameSiteMode(),
 	})
 
 	return ctx.Status(fiber.StatusOK).JSON(domain.UserToken{
-		AccessToken: *result,
-		Claims:      claims,
+		Claims: claims,
 	})
+}
+
+func (h *AuthHandler) sameSiteMode() string {
+	if h.cfg == nil || h.cfg.Server.Dev == "true" {
+		return fiber.CookieSameSiteLaxMode
+	}
+	return fiber.CookieSameSiteNoneMode
+}
+
+func (h *AuthHandler) secureCookie() bool {
+	if h.cfg == nil {
+		return false
+	}
+	return h.cfg.Server.Dev != "true"
 }

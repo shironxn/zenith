@@ -46,6 +46,9 @@ func (j JWT) GenerateRefreshToken(userID uint) (string, error) {
 
 func (j JWT) ValidateToken(token string, secret string) (*domain.Claims, error) {
 	tokenString, err := jwt.ParseWithClaims(token, &domain.Claims{}, func(t *jwt.Token) (interface{}, error) {
+		if t.Method != jwt.SigningMethodHS256 {
+			return nil, fiber.NewError(fiber.StatusBadRequest, "invalid token")
+		}
 		return []byte(secret), nil
 	})
 

@@ -45,13 +45,9 @@ func (m *AuthMiddleware) Auth() fiber.Handler {
 				Value:    *newAccessToken,
 				Path:     "/",
 				HTTPOnly: true,
+				Secure:   m.cfg.Server.Dev != "true",
 				Expires:  time.Now().Add(10 * time.Minute),
-				SameSite: func(dev string) string {
-					if dev == "true" {
-						return fiber.CookieSameSiteLaxMode
-					}
-					return fiber.CookieSameSiteNoneMode
-				}(m.cfg.Server.Dev),
+				SameSite: fiber.CookieSameSiteLaxMode,
 			})
 			c.Locals("claims", claims)
 

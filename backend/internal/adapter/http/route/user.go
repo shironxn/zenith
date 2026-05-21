@@ -26,5 +26,5 @@ func (r *UserRoute) Route(app *fiber.App) {
 	v1.Get("/me", r.middleware.Auth(), r.handler.GetMe)
 	v1.Get("/:id", r.handler.GetByID)
 	v1.Put("/:id", r.middleware.Auth(), r.handler.Update)
-	v1.Delete(":id", r.middleware.Auth(), r.handler.Delete)
+	v1.Delete("/:id", r.middleware.Auth(), r.handler.Delete)
 }

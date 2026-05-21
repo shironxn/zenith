@@ -1,71 +1,70 @@
 "use server";
 
 import { AuthLogin, AuthRegister } from "@/lib/schema/auth";
-import { cookies, headers } from "next/headers";
+import { serverFetch } from "@/lib/api/server-client";
+import { cookies } from "next/headers";
 
 const BASE_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-const Login = async (data: AuthLogin) => {
+const extractCookieValue = (raw: string, name: string) => {
+  const match = raw.match(new RegExp(`${name}=([^;]+)`));
+  return match?.[1];
+};
+
+export const Login = async (data: AuthLogin) => {
   const res = await fetch(`${BASE_API_URL}/auth/login`, {
     method: "POST",
-    body: JSON.stringify(data),
     headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
   });
 
-  const result = await res.json();
   if (!res.ok) {
-    return result.error;
+    try {
+      const result = await res.json();
+      if (typeof result.error === "string") return result.error;
+      if (Array.isArray(result.error)) return result.error[0]?.error || "login failed";
+      return "login failed";
+    } catch {
+      return "login failed";
+    }
   }
 
-  const accessTokenExpiresInMinutes = 10;
-  const accessTokenExpires = new Date(
-    Date.now() + accessTokenExpiresInMinutes * 60 * 1000
-  );
+  const rawCookie = res.headers.get("set-cookie") ?? "";
+  const accessToken = extractCookieValue(rawCookie, "access-token");
+  const refreshToken = extractCookieValue(rawCookie, "refresh-token");
 
-  cookies().set("access-token", result.tokens.access_token, {
+  if (!accessToken || !refreshToken) {
+    return "failed to initialize session";
+  }
+
+  cookies().set("access-token", accessToken, {
     httpOnly: true,
     path: "/",
-    expires: accessTokenExpires,
+    expires: new Date(Date.now() + 10 * 60 * 1000),
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
   });
 
-  const refreshTokenExpiresInMonths = 1;
-  const refreshTokenExpires = new Date(
-    Date.now() + refreshTokenExpiresInMonths * 30 * 24 * 60 * 60 * 1000
-  );
-
-  cookies().set("refresh-token", result.tokens.refresh_token, {
+  cookies().set("refresh-token", refreshToken, {
     httpOnly: true,
     path: "/",
-    expires: refreshTokenExpires,
+    expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
   });
 };
 
-const Register = async (data: AuthRegister) => {
-  const res = await fetch(`${BASE_API_URL}/auth/register`, {
+export const Register = async (data: AuthRegister) => {
+  const { error } = await serverFetch("/auth/register", {
     method: "POST",
     body: JSON.stringify(data),
-    headers: { "Content-Type": "application/json" },
   });
-
-  if (!res.ok) {
-    const result = await res.json();
-    return result.error;
-  }
+  if (error) return error.message;
 };
 
-const Logout = async () => {
-  const res = await fetch(`${BASE_API_URL}/auth/logout`, {
-    method: "POST",
-    headers: headers(),
-  });
-
-  if (!res.ok) {
-    const result = await res.json();
-    return result.error;
-  }
-
+export const Logout = async () => {
+  const { error } = await serverFetch("/auth/logout", { method: "POST" });
+  if (error) return error.message;
   cookies().delete("access-token");
   cookies().delete("refresh-token");
 };
-
-export { Login, Register, Logout };

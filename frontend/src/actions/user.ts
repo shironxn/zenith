@@ -1,49 +1,48 @@
 "use server";
 
-import { headers } from "next/headers";
+import { serverFetch } from "@/lib/api/server-client";
 import { notFound } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
-const BASE_API_URL = process.env.NEXT_PUBLIC_API_URL;
-
-const GetUserMe = async () => {
-  try {
-    const res = await fetch(`${BASE_API_URL}/users/me`, {
-      headers: headers(),
-      cache: "no-store",
-    });
-
-    const result = await res.json();
-    if (!res.ok) {
-      return { error: result?.error };
-    }
-
-    return { data: result };
-  } catch (error) {
-    console.error("Error during fetching user data:", error);
-    throw error;
-  }
+export const GetUserMe = async () => {
+  const { data, error } = await serverFetch<any>("/users/me", {
+    cache: "no-store",
+  });
+  if (error) return { error: error.message };
+  return { data };
 };
 
-const GetUserByName = async (name: string) => {
-  try {
-    const res = await fetch(`${BASE_API_URL}/users?name=${name}&details=true`, {
-      cache: "no-store",
-    });
+export const GetUserByName = async (name: string) => {
+  const { data, error } = await serverFetch<any>("/users", {
+    params: { name, details: "true" },
+    cache: "no-store",
+  });
 
-    if (res.status === 404) {
-      notFound();
-    }
-
-    const result = await res.json();
-    if (!res.ok) {
-      return { error: result?.error };
-    }
-
-    return await result.users[0];
-  } catch (error) {
-    console.error("Error during fetching user by ID:", error);
-    throw error;
-  }
+  if (error || !data?.users?.length) notFound();
+  return data.users[0];
 };
 
-export { GetUserMe, GetUserByName };
+export const GetUserByID = async (id: string) => {
+  const { data, error } = await serverFetch<any>(`/users/${id}`, {
+    cache: "no-store",
+  });
+  if (error) return { error: error.message };
+  return { data };
+};
+
+export const UpdateUser = async (id: string, data: any) => {
+  const { error } = await serverFetch(`/users/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(data),
+  });
+  if (error) return error.message;
+  revalidatePath("/profile");
+};
+
+export const DeleteUser = async (id: string) => {
+  const { error } = await serverFetch(`/users/${id}`, {
+    method: "DELETE",
+  });
+  if (error) return error.message;
+  revalidatePath("/");
+};

@@ -10,7 +10,7 @@ export const userSchema = z.object({
   avatar_url: z
     .string()
     .url()
-    .endsWith(".jpg" || ".png")
+    .regex(/\.(jpg|jpeg|png|webp|avif|gif)$/i, { message: "Must be a valid image URL" })
     .optional()
     .or(z.literal("")),
   created_at: z.string().datetime(),
@@ -25,14 +25,13 @@ export const userSchema = z.object({
 
 export const userRequestSchema = z.object({
   name: z.string().min(4).max(20).optional(),
-  email: z.string().optional(),
-  password: z.string().optional(),
+  email: z.string().email().optional().or(z.literal("")),
+  password: z.string().min(8).max(100).optional().or(z.literal("")),
   bio: z.string().max(50).optional(),
   avatar_url: z
     .string()
     .url()
-    .endsWith(".jpg")
-    .or(z.string().endsWith(".png"))
+    .regex(/\.(jpg|jpeg|png|webp|avif|gif)$/i, { message: "Must be a valid image URL" })
     .optional()
     .or(z.literal("")),
 });

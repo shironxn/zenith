@@ -10,7 +10,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import Link from "next/link";
 import { LoadingButton } from "@/components/loading-button";
 import { PasswordInput } from "@/components/password-input";
 import { useForm } from "react-hook-form";
@@ -68,11 +67,12 @@ const LoginForm = () => {
                 <FormMessage className="text-xs" />
               </div>
               <FormControl>
-                <PasswordInput required {...field} />
+                <PasswordInput required maxLength={100} {...field} />
               </FormControl>
-              <FormDescription className="text-right cursor-pointer">
-                Forgot password?
-              </FormDescription>
+              <div className="flex items-center justify-between text-xs text-muted-foreground">
+                <FormDescription>{(field.value?.length || 0)}/100</FormDescription>
+                <FormDescription className="cursor-pointer">Forgot password?</FormDescription>
+              </div>
             </FormItem>
           )}
         />
@@ -84,12 +84,6 @@ const LoginForm = () => {
           Submit
         </LoadingButton>
       </form>
-      <p className="leading-7 [&:not(:first-child)]:mt-6 text-center">
-        Not have an account?{" "}
-        <span className="font-semibold cursor-pointer">
-          <Link href="/register">Register</Link>
-        </span>
-      </p>
     </Form>
   );
 };

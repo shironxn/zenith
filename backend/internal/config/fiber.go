@@ -20,9 +20,14 @@ func ErrorHandler() fiber.ErrorHandler {
 			code = e.Code
 		}
 
+		message := err.Error()
+		if code >= fiber.StatusInternalServerError {
+			message = "internal server error"
+		}
+
 		return ctx.Status(code).JSON(domain.ErrorResponse{
 			Code:  code,
-			Error: err.Error(),
+			Error: message,
 		})
 	}
 }

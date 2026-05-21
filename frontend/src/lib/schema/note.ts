@@ -8,7 +8,7 @@ export const noteSchema = z.object({
   cover_url: z
     .string()
     .url()
-    .endsWith(".jpg" || ".png"),
+    .regex(/\.(jpg|jpeg|png|webp|avif|gif)$/i, { message: "Must be a valid image URL" }),
   content: z.string(),
   visibility: z.enum(["public", "private"]),
   author: z.object({
@@ -17,7 +17,7 @@ export const noteSchema = z.object({
     avatar_url: z
       .string()
       .url()
-      .endsWith(".jpg" || ".png")
+      .regex(/\.(jpg|jpeg|png|webp|avif|gif)$/i, { message: "Must be a valid image URL" })
       .optional()
       .or(z.literal("")),
   }),
@@ -28,8 +28,11 @@ export const noteSchema = z.object({
 export const noteCreateSchema = z.object({
   title: z.string().min(1).max(25),
   description: z.string().min(1).max(50),
-  cover_url: z.string().url().endsWith(".jpg").or(z.string().endsWith(".png")),
-  content: z.string().min(1),
+  cover_url: z
+    .string()
+    .url()
+    .regex(/\.(jpg|jpeg|png|webp|avif|gif)$/i, { message: "Must be a valid image URL" }),
+  content: z.string().min(1).max(5000),
   visibility: z.enum(["public", "private"]),
 });
 
@@ -39,9 +42,9 @@ export const noteUpdateSchema = z.object({
   cover_url: z
     .string()
     .url()
-    .endsWith(".jpg" || ".png")
+    .regex(/\.(jpg|jpeg|png|webp|avif|gif)$/i, { message: "Must be a valid image URL" })
     .optional(),
-  content: z.string().min(1).optional(),
+  content: z.string().min(1).max(5000).optional(),
   visibility: z.enum(["public", "private"]).optional(),
 });
 

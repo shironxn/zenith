@@ -21,7 +21,7 @@ func NewValidator() (*Validator, error) {
 	validate := validator.New()
 
 	if err := validate.RegisterValidation("image", func(fl validator.FieldLevel) bool {
-		return regexp.MustCompile(`\.(?:jpg|png)$`).MatchString(fl.Field().String())
+		return regexp.MustCompile(`(?i)\.(?:jpg|jpeg|png|webp|avif|gif)$`).MatchString(fl.Field().String())
 	}); err != nil {
 		return nil, err
 	}

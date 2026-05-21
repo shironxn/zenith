@@ -31,7 +31,7 @@ const NotePagination = ({
       params.delete("page");
     }
     replace(`${pathname}?${params.toString()}`);
-  }, [page]);
+  }, [page, pathname, replace, searchParams]);
 
   return (
     <Pagination>

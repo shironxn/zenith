@@ -29,7 +29,7 @@ type NoteRequest struct {
 	Title       string `json:"title" validate:"required,max=25" conform:"name,title,alpha"`
 	Description string `json:"description" validate:"required,max=50" conform:"trim"`
 	CoverURL    string `json:"cover_url" validate:"required,url,image" conform:"trim"`
-	Content     string `json:"content" validate:"required" conform:"trim"`
+	Content     string `json:"content" validate:"required,max=5000" conform:"trim"`
 	Visibility  string `json:"visibility" validate:"required,oneof=private public"`
 	UserID      uint   `json:"user_id"`
 }
@@ -39,7 +39,7 @@ type NoteUpdateRequest struct {
 	Title       string `json:"title" validate:"omitempty,max=25" conform:"name,title"`
 	Description string `json:"description" validate:"omitempty,max=50" conform:"trim"`
 	CoverURL    string `json:"cover_url" validate:"omitempty,url,image" conform:"trim"`
-	Content     string `json:"content" validate:"omitempty" conform:"trim"`
+	Content     string `json:"content" validate:"omitempty,max=5000" conform:"trim"`
 	Visibility  string `json:"visibility" validate:"omitempty,oneof=private public"`
 	UserID      uint   `json:"user_id"`
 }

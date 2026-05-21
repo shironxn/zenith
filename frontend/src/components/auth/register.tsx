@@ -3,13 +3,13 @@
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import Link from "next/link";
 import { LoadingButton } from "@/components/loading-button";
 import { PasswordInput } from "@/components/password-input";
 import { useForm } from "react-hook-form";
@@ -51,8 +51,11 @@ const RegisterForm = () => {
                 <FormMessage className="text-xs" />
               </div>
               <FormControl>
-                <Input required {...field} />
+                <Input required maxLength={20} {...field} />
               </FormControl>
+              <FormDescription className="text-right text-xs">
+                {(field.value?.length || 0)}/20
+              </FormDescription>
             </FormItem>
           )}
         />
@@ -81,8 +84,11 @@ const RegisterForm = () => {
                 <FormMessage className="text-xs" />
               </div>
               <FormControl>
-                <PasswordInput required {...field} />
+                <PasswordInput required maxLength={100} {...field} />
               </FormControl>
+              <FormDescription className="text-right text-xs">
+                {(field.value?.length || 0)}/100
+              </FormDescription>
             </FormItem>
           )}
         />
@@ -94,12 +100,6 @@ const RegisterForm = () => {
           Submit
         </LoadingButton>
       </form>
-      <p className="leading-7 [&:not(:first-child)]:mt-6 text-center">
-        Already have an account?{" "}
-        <span className="font-semibold cursor-pointer">
-          <Link href="/login">Login</Link>
-        </span>
-      </p>
     </Form>
   );
 };

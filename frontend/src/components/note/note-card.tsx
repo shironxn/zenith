@@ -1,198 +1,86 @@
 "use client";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
-import Image from "next/image";
-import { Note, NotePagination as NoteData } from "@/lib/schema/note";
+import { motion } from "framer-motion";
+import { Note } from "@/lib/schema/note";
+import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
-import { NoteMenu } from "@/components/note-drawer";
-import { usePathname, useRouter } from "next/navigation";
-import { Router } from "lucide-react";
+import Image from "next/image";
+import { useState } from "react";
 
-export const LoadingCard = () => {
+function NoteThumbnail({ src, title }: { src?: string; title: string }) {
+  const [isBroken, setIsBroken] = useState(false);
+  const hasImage = Boolean(src) && !isBroken;
+
+  if (!hasImage) {
+    return (
+      <div className="mb-4 flex aspect-[16/9] w-full items-center justify-center rounded-lg bg-muted text-xs text-muted-foreground">
+        No image
+      </div>
+    );
+  }
+
   return (
-    <>
-      {Array.from({ length: 6 }).map((_, i: number) => (
-        <Card key={i}>
-          <CardHeader>
-            <div className="w-full">
-              <AspectRatio ratio={5 / 1}>
-                <Skeleton className="w-full h-full rounded-t-md" />
-              </AspectRatio>
-            </div>
-          </CardHeader>
-          <CardContent className="w-[248px] h-[104px]"></CardContent>
-          <div className="px-6 pb-3">
-            <Separator />
-          </div>
-          <CardFooter className="justify-between">
-            <div className="flex text-center items-center space-x-4">
-              <Avatar>
-                <Skeleton className="w-full h-full" />
-              </Avatar>
-              <small className="text-sm font-medium leading-none">
-                <Skeleton className="w-full h-full" />
-              </small>
-            </div>
-            <Skeleton className="w-16 h-10" />
-          </CardFooter>
-        </Card>
-      ))}
-    </>
+    <div className="relative mb-4 aspect-[16/9] w-full overflow-hidden rounded-lg bg-muted">
+      <Image
+        src={src as string}
+        alt={title}
+        fill
+        className="object-cover"
+        onError={() => setIsBroken(true)}
+      />
+    </div>
   );
-};
+}
 
-export function NoteCard({ data }: { data: NoteData }) {
-  const pathname = usePathname();
-  const router = useRouter();
+export function NoteCard({ data }: { data: any }) {
+  const notes: Note[] = data?.notes || [];
+
+  if (notes.length === 0) {
+    return (
+      <div className="col-span-full py-20 text-center text-muted-foreground">
+        No notes found.
+      </div>
+    );
+  }
 
   return (
     <>
-      {data?.notes ? (
-        data.notes.map((item: Note, i: number) => (
-          <Card key={i}>
-            <CardHeader>
-              <div className="w-full">
-                <AspectRatio ratio={5 / 1}>
-                  <Image
-                    src={item.cover_url}
-                    alt=""
-                    className="object-cover rounded-t-md"
-                    fill
-                  />
-                </AspectRatio>
-              </div>
-            </CardHeader>
-            <CardContent className="md:h-[104px]">
-              <div className="flex flex-col md:flex-row justify-between">
-                <CardTitle className="scroll-m-20 text-xl font-semibold tracking-tigh line-clamp-2 md:w-2/4 lg:w-1/2">
-                  {item.title}
-                </CardTitle>
-                <CardDescription>
-                  {new Date(item.created_at).toLocaleDateString("en-DB", {
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
-                  })}
-                </CardDescription>
-              </div>
-              <p className="leading-7 line-clamp-2">{item.description}</p>
-            </CardContent>
-            <div className="px-6 pb-3">
-              <Separator />
+      {notes.map((note, i) => (
+        <motion.div
+          key={note.id}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: i * 0.05 }}
+          whileHover={{ y: -4 }}
+          className="group relative flex flex-col rounded-xl border bg-card p-4 shadow-sm transition-shadow hover:shadow-md"
+        >
+          <Link href={`/note/${note.id}`} className="absolute inset-0 z-10" />
+          <NoteThumbnail src={note.cover_url} title={note.title} />
+          <h3 className="mb-2 line-clamp-1 text-lg font-semibold tracking-tight">
+            {note.title}
+          </h3>
+          <p className="mb-4 line-clamp-3 text-sm text-muted-foreground">
+            {note.description}
+          </p>
+          <div className="mt-auto flex items-center justify-between gap-2 pt-2">
+            <div className="flex items-center gap-2">
+              <Avatar className="size-6">
+                <AvatarImage
+                  src={note.author?.avatar_url || ""}
+                  alt={note.author?.name || "User"}
+                />
+                <AvatarFallback>
+                  {(note.author?.name || "U").slice(0, 1).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <span className="text-xs font-medium">{note.author?.name}</span>
             </div>
-            <CardFooter className="justify-between">
-              <div className="flex text-center items-center space-x-4">
-                <Avatar className="h-10 w-10">
-                  <AvatarImage src={item.author.avatar_url} />
-                  <AvatarFallback>
-                    {item.author.name.slice(0, 2).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                <small className="text-sm font-medium leading-none">
-                  @{item.author.name}
-                </small>
-              </div>
-              <div>
-                {/* <Button
-                  variant={"outline"}
-                  onClick={() => router.push(`/note/${item.id}`)}
-                >
-                  Read
-                </Button> */}
-                <Dialog>
-                  <div className="space-x-2">
-                    {pathname == "/profile" && <NoteMenu note={item} />}
-                    <DialogTrigger asChild>
-                      <Button variant="outline">Read</Button>
-                    </DialogTrigger>
-                  </div>
-                  <DialogContent className="sm:max-w-md">
-                    <DialogHeader>
-                      <DialogTitle>{item.title}</DialogTitle>
-                      <DialogDescription>
-                        <p className="leading-7 [&:not(:first-child)]:mt-6">
-                          {item.description}
-                        </p>
-                      </DialogDescription>
-                      <div className="w-full">
-                        <AspectRatio ratio={4 / 2}>
-                          <Image
-                            src={item.cover_url}
-                            alt=""
-                            className="object-cover"
-                            fill
-                          />
-                        </AspectRatio>
-                      </div>
-                    </DialogHeader>
-                    <div className="flex items-center space-x-2">
-                      <div className="grid flex-1 gap-2">
-                        <p className="leading-7 [&:not(:first-child)]:mt-6">
-                          {item.content}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="w-full">
-                      <Separator />
-                    </div>
-                    <DialogFooter>
-                      <div className="justify-between flex items-center w-full">
-                        <div className="flex text-center items-center space-x-4">
-                          <Avatar className="h-12 w-12">
-                            <AvatarImage src={item.author.avatar_url} />
-                            <AvatarFallback>
-                              {item.author.name.slice(0, 2).toUpperCase()}
-                            </AvatarFallback>
-                          </Avatar>
-                          <small className="text-sm font-medium leading-none">
-                            @{item.author.name}
-                          </small>
-                        </div>
-                        <DialogDescription>
-                          <p className="text-right">
-                            {new Date(item.created_at).toLocaleDateString(
-                              "en-DB",
-                              {
-                                day: "numeric",
-                                month: "long",
-                                year: "numeric",
-                                hour: "numeric",
-                                minute: "numeric",
-                              }
-                            )}
-                          </p>
-                        </DialogDescription>
-                      </div>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
-              </div>
-            </CardFooter>
-          </Card>
-        ))
-      ) : (
-        <LoadingCard />
-      )}
+            <span className="text-xs text-muted-foreground">
+              {new Date(note.created_at).toLocaleDateString()}
+            </span>
+          </div>
+        </motion.div>
+      ))}
     </>
   );
 }

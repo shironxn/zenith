@@ -1,29 +1,23 @@
-import { AspectRatio } from "@/components/ui/aspect-ratio";
-import Image from "next/image";
 import { RegisterForm } from "@/components/auth/register";
+import Link from "next/link";
 
 export default function Page() {
   return (
-    <div className="flex justify-center items-center min-h-screen">
-      <div className="max-w-6xl flex-col-reverse flex space-y-5 p-5 md:flex-row w-full md:space-x-10">
-        <div className="w-full space-y-6 md:w-1/2">
-          <div>
-            <h1 className="text-center scroll-m-20 text-5xl font-extrabold tracking-tight md:text-5xl">
-              Register
-            </h1>
-          </div>
-          <RegisterForm />
+    <div className="flex min-h-[calc(100vh-64px)] items-center justify-center py-12">
+      <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+        <div className="flex flex-col space-y-2 text-center">
+          <h1 className="text-3xl font-bold tracking-tight">Create an account</h1>
+          <p className="text-sm text-muted-foreground">
+            Join Zenith and start taking notes today
+          </p>
         </div>
-        <div className="w-full md:w-1/2 flex justify-center items-center ">
-          <AspectRatio ratio={1 / 1}>
-            <Image
-              src="/register.png"
-              alt="Image"
-              className="rounded-md object-cover"
-              fill
-            />
-          </AspectRatio>
-        </div>
+        <RegisterForm />
+        <p className="px-8 text-center text-sm text-muted-foreground">
+          Already have an account?{" "}
+          <Link href="/login" className="underline underline-offset-4 hover:text-primary">
+            Login
+          </Link>
+        </p>
       </div>
     </div>
   );

@@ -3,6 +3,7 @@ package repository
 import (
 	"errors"
 	"reflect"
+	"strings"
 
 	"github.com/shironxn/zenith/internal/core/domain"
 	"github.com/shironxn/zenith/internal/core/port"
@@ -54,10 +55,22 @@ func (r *NoteRepository) Create(req domain.NoteRequest) (*domain.Note, error) {
 func (r *NoteRepository) GetAll(req domain.NoteQuery, metadata *domain.Metadata) ([]domain.Note, error) {
 	var entity []domain.Note
 
-	if err := r.db.
-		Model(&domain.Note{}).
-		Preload("Author").
-		Where(&req).
+	query := r.db.Model(&domain.Note{}).Preload("Author")
+
+	if req.Visibility != "" {
+		query = query.Where("visibility = ?", req.Visibility)
+	}
+
+	if req.UserID > 0 {
+		query = query.Where("user_id = ?", req.UserID)
+	}
+
+	searchTitle := normalizeSearchTerm(req.Title)
+	if searchTitle != "" {
+		query = query.Where("title ILIKE ? ESCAPE '\\'", "%"+escapeLike(searchTitle)+"%")
+	}
+
+	if err := query.
 		Count(&metadata.TotalRecords).
 		Scopes(r.pagination.Paginate(metadata)).
 		Find(&entity).
@@ -65,11 +78,24 @@ func (r *NoteRepository) GetAll(req domain.NoteQuery, metadata *domain.Metadata)
 		return nil, err
 	}
 
-	if reflect.DeepEqual(entity, []domain.Note{}) {
-		return nil, fiber.NewError(fiber.StatusNotFound, "notes not found")
-	}
-
 	return entity, nil
+}
+
+func normalizeSearchTerm(input string) string {
+	term := strings.Join(strings.Fields(strings.TrimSpace(input)), " ")
+	if len(term) > 50 {
+		term = term[:50]
+	}
+	return term
+}
+
+func escapeLike(input string) string {
+	replacer := strings.NewReplacer(
+		"\\", "\\\\",
+		"%", "\\%",
+		"_", "\\_",
+	)
+	return replacer.Replace(input)
 }
 
 func (r *NoteRepository) GetByID(id uint) (*domain.Note, error) {
